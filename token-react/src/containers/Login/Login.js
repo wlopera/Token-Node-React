@@ -1,60 +1,76 @@
 import React, { useState } from "react";
+import ApiService from "../../services/ApiService";
+import "./Login.css";
+import Card from "../../components/Card/Card";
 
 const Login = (props) => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
+  const [message, setMessage] = useState("");
+  const [data, setData] = useState([]);
 
   const login = () => {
     const data = {
-      user: "wlopera",
-      password: "12345",
+      user,
+      password,
     };
 
-    fetch("http://localhost:8001/login", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((response) => {
-      response.json().then((result) => {
-        console.info("Result: ", result);
-        setToken(result.token);
-      });
+    const response = ApiService.getLogin(data);
+    response.then((data) => {
+      if (data.code === 200) {
+        setMessage("[CODE: 200]: Proceso OK ");
+        setToken(data.token);
+      } else {
+        setMessage(`[CODE: ${data.code}]:  ${data.error}`);
+      }
     });
   };
 
-  const datos = () => {
-    fetch("http://localhost:8001/data", {
-      method: "GET",
-      headers: {
-        authorization: token,
-      },
-    }).then((response) => {
-      response.json().then((result) => {
-        console.info("Result: ", result);
-        setToken(result);
-      });
+  const dataHandler = () => {
+    const response = ApiService.getData(token);
+    response.then((data) => {
+      if (data.code === 200) {
+        setData(data.datos);
+        setMessage("[CODE: 200]: Proceso OK ");
+      } else {
+        setMessage(`[CODE: ${data.code}]:  ${data.error}`);
+      }
     });
   };
+
+  const changeHandler = (event) => {
+    setMessage("");
+    if (event.target.name === "user") {
+      setUser(event.target.value);
+    } else {
+      setPassword(event.target.value);
+    }
+  };
+
+  const listItems = data.map((item) => <li key={item.id}>{item.nombre}</li>);
 
   return (
-    <div>
+    <Card>
       <div>
         <div>
-          Usuario: <input type="text" name="user" id="user" onChange={(event) => setUser(event.target.value)} />
+          Usuario: <input type="text" name="user" id="user" onChange={changeHandler} />
         </div>
         <div>
-          Clave:{" "}
-          <input type="text" name="password" id="password" onChange={(event) => setPassword(event.target.value)} />
+          Clave: <input type="text" name="password" id="password" onChange={changeHandler} />
         </div>
         <button onClick={login}>Login</button>
       </div>
       <div>
-        <button onClick={datos}>Consultar Datos</button>
+        <button onClick={dataHandler}>Consultar Alumnos</button>
       </div>
-    </div>
+      <div className="data">
+        <ul>{listItems}</ul>
+      </div>
+      <div>
+        <span>{message}</span>
+      </div>
+    </Card>
   );
 };
 
