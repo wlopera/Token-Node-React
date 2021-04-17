@@ -11,6 +11,8 @@ const Login = (props) => {
   const [data, setData] = useState([]);
 
   const login = () => {
+    setData([]);
+
     const data = {
       user,
       password,
@@ -28,6 +30,7 @@ const Login = (props) => {
   };
 
   const dataHandler = () => {
+    setData([]);
     const response = ApiService.getData(token);
     response.then((data) => {
       if (data.code === 200) {

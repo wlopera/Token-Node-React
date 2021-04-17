@@ -5,7 +5,7 @@ class ApiService {
   // Conectarse al servidor (obtener el token dado usario y clave)
   getLogin = async (input) => {
     try {
-      const response = await fetch(`${API_NODE_URL}/login`, {
+      const response = await fetch(`${API_NODE_URL}/api/v1/token/login`, {
         method: "POST",
         body: JSON.stringify(input),
         headers: {
@@ -22,7 +22,7 @@ class ApiService {
   // Consultar lista de valores de prueba
   getData = async (token) => {
     try {
-      const response = await fetch(`${API_NODE_URL}/data`, {
+      const response = await fetch(`${API_NODE_URL}/api/v1/token/data`, {
         method: "GET",
         headers: {
           authorization: token,

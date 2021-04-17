@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "dev": "nodemon token",
-        "start": "node token"
+        "dev": "nodemon app",
+        "start": "node app"
     },
     "dependencies": {
         "body-parser": "^1.19.0",
