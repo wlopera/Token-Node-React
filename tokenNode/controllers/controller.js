@@ -1,106 +1,85 @@
+const TokenService = require("../services/TokenService");
+
 const jwt = require("jsonwebtoken");
+
 const router = require("express").Router();
 
 /**
  * Conexion por login
  */
 exports.getLogin = async (req, res) => {
-  console.log(111, req.body);
-  const username = req.body.user;
-  const password = req.body.password;
+  const service = new TokenService();
 
-  console.log("user/password: ", username, "/", password);
-
-  if (!(username === "wlopera" && password === "12345")) {
-    res.status(401).send({
-      error: "Usuario o contraseña inválidos",
-      code: 401,
+  try {
+    const result = await service.getLogin({
+      ...req.body,
     });
-    return;
+    console.log("Servicio geLogin: ", result);
+    res.send(result);
+    return result;
+  } catch (err) {
+    console.log("Error getLogin", err);
+    return res.send(err);
   }
-
-  const tokenData = {
-    username: username,
-    // ANY DATA
-  };
-
-  const token = jwt.sign(tokenData, process.env.TOKEN_SECRET, {
-    //expiresIn: 60 * 60 * 24, // expira en 24 horas
-    expiresIn: 30 * 1 * 1, // expira en 30 segundos
-  });
-
-  res.send({
-    token,
-    code: 200,
-  });
 };
 
 /**
  * Probar token valido
  */
 exports.getSecure = async (req, res) => {
-  const token = req.headers["authorization"];
-  if (!token) {
-    res.status(401).send({
-      error: "Es necesario el token de autenticación",
-      code: 403,
+  const service = new TokenService();
+
+  try {
+    const result = await service.getSecure({
+      ...req.body,
     });
-    return;
+    console.log("Servicio getSecure: ", result);
+    res.send(result);
+    return result;
+  } catch (err) {
+    console.log("Error getSecure", err);
+    return res.send(err);
   }
-
-  token = token.replace("Bearer ", "");
-
-  jwt.verify(token, process.env.TOKEN_SECRET, function (err, user) {
-    if (err) {
-      res.status(401).send({
-        error: "Token inválido",
-        code: "401",
-      });
-    } else {
-      res.send({
-        message: "Awwwww yeah!!!!",
-        code: "200",
-      });
-    }
-  });
 };
 
 /**
  * Obtener datos
  */
 exports.getData = async (req, res) => {
-  const datos = [
-    { id: 1, nombre: "Andrés" },
-    { id: 2, nombre: "Daniel" },
-    { id: 3, nombre: "Camila" },
-    { id: 4, nombre: "Carlos" },
-    { id: 5, nombre: "William" },
-  ];
+  const service = new TokenService();
 
-  res.json({ datos, code: 200 });
+  try {
+    const result = await service.getData({
+      ...req.body,
+    });
+    console.log("Servicio getData: ", result);
+    res.send(result);
+    return result;
+  } catch (err) {
+    console.log("Error getData", err);
+    return res.send(err);
+  }
 };
 
 /**
  * Intermediario para validar solicitud
  */
-
 exports.middleware = async (req, res, next) => {
-  console.log(222, req.headers);
-  const token = req.headers["authorization"];
+  const service = new TokenService();
 
-  if (token) {
-    jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
-      if (err) {
-        return res.json({ mensaje: "Token inválido", code: 401 });
-      } else {
-        req.decoded = decoded;
-        next();
-      }
+  try {
+    const result = await service.middleware({
+      ...req.headers,
     });
-  } else {
-    res.send({
-      error: "Token no provisto.",
-      code: 402,
-    });
+    console.log("Servicio middleware: ", result);
+    if (result.code === 200) {
+      req.decoded = result;
+      next();
+    } else {
+      return res.send(result);
+    }
+  } catch (err) {
+    console.log("Error middleware", err);
+    return res.send(err);
   }
 };

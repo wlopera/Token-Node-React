@@ -4,7 +4,7 @@ import "./Login.css";
 import Card from "../../components/Card/Card";
 
 const Login = (props) => {
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const [message, setMessage] = useState("");
@@ -14,7 +14,7 @@ const Login = (props) => {
     setData([]);
 
     const data = {
-      user,
+      username,
       password,
     };
 
@@ -25,6 +25,7 @@ const Login = (props) => {
         setToken(data.token);
       } else {
         setMessage(`[CODE: ${data.code}]:  ${data.error}`);
+        setToken("");
       }
     });
   };
@@ -38,14 +39,15 @@ const Login = (props) => {
         setMessage("[CODE: 200]: Proceso OK ");
       } else {
         setMessage(`[CODE: ${data.code}]:  ${data.error}`);
+        setData([]);
       }
     });
   };
 
   const changeHandler = (event) => {
     setMessage("");
-    if (event.target.name === "user") {
-      setUser(event.target.value);
+    if (event.target.name === "username") {
+      setUsername(event.target.value);
     } else {
       setPassword(event.target.value);
     }
@@ -57,7 +59,7 @@ const Login = (props) => {
     <Card>
       <div>
         <div>
-          Usuario: <input type="text" name="user" id="user" onChange={changeHandler} />
+          Usuario: <input type="text" name="username" id="username" onChange={changeHandler} />
         </div>
         <div>
           Clave: <input type="text" name="password" id="password" onChange={changeHandler} />
