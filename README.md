@@ -12,3 +12,5 @@ CURSO REACT - REDUX:
 
 ## Salida Token - Envio de correo
 ![Captura](https://user-images.githubusercontent.com/7141537/115178966-ed7f9780-a097-11eb-9f39-2d59e4f085e5.PNG)
+
+![Captura](https://user-images.githubusercontent.com/7141537/115179100-30da0600-a098-11eb-8cd8-bc1ff34d995e.PNG)
