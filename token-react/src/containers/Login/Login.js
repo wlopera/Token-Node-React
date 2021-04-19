@@ -53,6 +53,26 @@ const Login = (props) => {
     }
   };
 
+  const sendEmailChandler = () => {
+    const input = {
+      token,
+      fromEmail: "lopera.william@gmail.com",
+      toEmail: "william.lopera@pranical.com",
+      subject: "Envio de correo desde React-NodeJS",
+      html: "<p> Esto es un párrafo con el cuerpo del mensaje, <span>bla, bla, bla.</span> </p>",
+    };
+
+    const response = ApiService.sendEmail(input);
+    response.then((data) => {
+      console.log("Envio de correo: ", data);
+      if (data.code === 200) {
+        setMessage(`[CODE: ${data.code}]: ${data.message}`);
+      } else {
+        setMessage(`[CODE: ${data.code}]:  ${data.error}`);
+      }
+    });
+  };
+
   const listItems = data.map((item) => <li key={item.id}>{item.nombre}</li>);
 
   return (
@@ -68,6 +88,9 @@ const Login = (props) => {
       </div>
       <div>
         <button onClick={dataHandler}>Consultar Alumnos</button>
+      </div>
+      <div>
+        <button onClick={sendEmailChandler}>Enviar Correo</button>
       </div>
       <div className="data">
         <ul>{listItems}</ul>

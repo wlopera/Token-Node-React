@@ -1,4 +1,5 @@
 const TokenService = require("../services/TokenService");
+const utility = require("../utilities/utilities");
 
 const jwt = require("jsonwebtoken");
 
@@ -82,4 +83,25 @@ exports.middleware = async (req, res, next) => {
     console.log("Error middleware", err);
     return res.send(err);
   }
+};
+
+/**
+ * Envio de un correo
+ */
+exports.sendEmail = async (req, res) => {
+  // .sendEmail(req, req.body.toEmail, req.body.subject, req.body.templateName, req.body.paramsEmail)
+
+  utility
+    .sendEmail(req.body.fromEmail, req.body.toEmail, req.body.subject, req.body.html)
+    .then((result) => {
+      res.send({ code: 200, message: "Correo enviado satisfactoriamente...", ...result });
+    })
+    .catch((err) => {
+      console.log("No se pudo enviar el correo.", err);
+      return res.send({
+        error: "No se pudo enviar el correo",
+        code: "401",
+        ...err,
+      });
+    });
 };
